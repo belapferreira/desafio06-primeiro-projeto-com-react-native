@@ -13,12 +13,13 @@ export default function Routes() {
       headerLayoutPreset="center"
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#7159c1',
+          backgroundColor: '#7159c1'
         },
+        headerTitleAlign: 'center',
         headerTintColor: '#FFF',
       }}
     >
-      <Stack.Screen name="Main" component={Main} options={{ title: 'Main' }} />
+      <Stack.Screen name="Main" component={Main} options={{ title: 'Usuários' }} />
       <Stack.Screen
         name="User"
         component={User}
