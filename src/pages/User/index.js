@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { ActivityIndicator } from 'react-native';
 import api from '../../services/api';
 
 import {
@@ -16,54 +17,72 @@ import {
   Author,
 } from './styles';
 
-export default function User({ route }) {
-  const [stars, setStars] = useState([]);
-  const { user } = route.params;
+export default class User extends Component {
 
-  useEffect(() => {
-    async function getUserData() {
-      const response = await api.get(`/users/${user.login}/starred`);
+  state = {
+    stars: [],
+    loading: false,
+  };
 
-      setStars(response.data);
-    }
+  async componentDidMount() {
+    this.getUserData();
+  }
 
-    getUserData();
-  }, []);
+  getUserData = async () => {
+    const { stars } = this.state;
+    const { route } = this.props;
+    const { user } = route.params;
 
-  return (
-    <Container>
-      <Header>
-        <Avatar source={{ uri: user.avatar }} />
-        <Name>{user.name}</Name>
-        <Bio>{user.bio}</Bio>
-      </Header>
+    this.setState({ loading: true });
 
-      <Stars
-        data={stars}
-        keyExtractor={star => String(star.id)}
-        renderItem={({ item }) => (
-          <Starred>
-            <OwnerAvatar source={{ uri: item.owner.avatar_url }} />
-            <Info>
-              <Title>{item.name}</Title>
-              <Author>{item.owner.login}</Author>
-            </Info>
-          </Starred>
+    const response = await api.get(`/users/${user.login}/starred`);
+
+    this.setState({
+      stars: [...stars, ...response.data],
+      loading: false,
+    })
+  };
+
+  render() {
+    const { stars, loading } = this.state;
+    const { route } = this.props;
+    const { user } = route.params;
+
+    return (
+      <Container>
+        <Header>
+          <Avatar source={{ uri: user.avatar }} />
+          <Name>{user.name}</Name>
+          <Bio>{user.bio}</Bio>
+        </Header>
+
+        {loading ? <ActivityIndicator color="#000" /> : (
+        <Stars
+          data={stars}
+          keyExtractor={star => String(star.id)}
+          renderItem={({ item }) => (
+            <Starred>
+              <OwnerAvatar source={[{ uri: item.owner.avatar_url }]} />
+              <Info>
+                <Title>{item.name}</Title>
+                <Author>{item.owner.login}</Author>
+              </Info>
+            </Starred>
+          )}
+        />
         )}
-      />
-    </Container>
-  );
+      </Container>
+    )
+  }
 }
 
 User.propTypes = {
   route: PropTypes.shape({
     params: PropTypes.shape({
-      user: PropTypes.shape({
-        login: PropTypes.string,
-        avatar: PropTypes.string,
-        name: PropTypes.string,
-        bio: PropTypes.string,
-      }),
+      login: PropTypes.string,
+      name: PropTypes.string,
+      avatar: PropTypes.string,
+      bio: PropTypes.string
     }),
   }).isRequired,
 };
