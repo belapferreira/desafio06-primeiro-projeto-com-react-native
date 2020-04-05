@@ -21,26 +21,36 @@ export default class User extends Component {
 
   state = {
     stars: [],
-    loading: false,
+    loading: true,
+    page: 1,
   };
 
   async componentDidMount() {
     this.getUserData();
   }
 
-  getUserData = async () => {
+  getUserData = async ( page = 1) => {
     const { stars } = this.state;
     const { route } = this.props;
     const { user } = route.params;
 
-    this.setState({ loading: true });
-
-    const response = await api.get(`/users/${user.login}/starred`);
+    const response = await api.get(`/users/${user.login}/starred`, {
+      params: { page },
+    });
 
     this.setState({
-      stars: [...stars, ...response.data],
+      stars: page >= 2 ? [...stars, ...response.data] : response.data,
+      page,
       loading: false,
     })
+  };
+
+  loadMore = () => {
+    const { page } = this.state;
+
+    const nextPage = page + 1;
+
+    this.getUserData(nextPage);
   };
 
   render() {
@@ -56,9 +66,11 @@ export default class User extends Component {
           <Bio>{user.bio}</Bio>
         </Header>
 
-        {loading ? <ActivityIndicator color="#000" /> : (
+        {loading ? <ActivityIndicator color="#666" /> : (
         <Stars
           data={stars}
+          onEndReachedThreshold={0.2}
+          onEndReached={this.loadMore}
           keyExtractor={star => String(star.id)}
           renderItem={({ item }) => (
             <Starred>
@@ -77,12 +89,14 @@ export default class User extends Component {
 }
 
 User.propTypes = {
-  route: PropTypes.shape({
+    route: PropTypes.shape({
     params: PropTypes.shape({
-      login: PropTypes.string,
-      name: PropTypes.string,
-      avatar: PropTypes.string,
-      bio: PropTypes.string
+      user: PropTypes.shape({
+        login: PropTypes.string,
+        name: PropTypes.string,
+        avatar: PropTypes.string,
+        bio: PropTypes.string,
+      }),
     }),
   }).isRequired,
 };
