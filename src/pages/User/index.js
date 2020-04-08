@@ -23,6 +23,7 @@ export default class User extends Component {
     stars: [],
     loading: true,
     page: 1,
+    refreshing: false,
   };
 
   async componentDidMount() {
@@ -42,6 +43,7 @@ export default class User extends Component {
       stars: page >= 2 ? [...stars, ...response.data] : response.data,
       page,
       loading: false,
+      refreshing: false,
     })
   };
 
@@ -53,8 +55,18 @@ export default class User extends Component {
     this.getUserData(nextPage);
   };
 
+  refreshList = () => {
+    this.setState({ refreshing: true, stars: [] }, this.getUserData);
+  };
+
+  handleNavigate = (repository) => {
+    const { navigation } = this.props;
+
+    navigation.navigate('Repository', { repository });
+  };
+
   render() {
-    const { stars, loading } = this.state;
+    const { stars, loading, refreshing } = this.state;
     const { route } = this.props;
     const { user } = route.params;
 
@@ -69,11 +81,13 @@ export default class User extends Component {
         {loading ? <ActivityIndicator color="#666" /> : (
         <Stars
           data={stars}
+          onRefresh={this.refreshList}
+          refreshing={refreshing}
           onEndReachedThreshold={0.2}
           onEndReached={this.loadMore}
           keyExtractor={star => String(star.id)}
           renderItem={({ item }) => (
-            <Starred>
+            <Starred onPress={() => this.handleNavigate(item)}>
               <OwnerAvatar source={[{ uri: item.owner.avatar_url }]} />
               <Info>
                 <Title>{item.name}</Title>
