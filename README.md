@@ -5,7 +5,7 @@
 <h2 align="center">
   <p>Desafio 6: Primeiro projeto com React Native</p>
   <p>
-  <img src="/images/desafio06.PNG" width="500" height="343" >
+  <img src="/images/desafio06.PNG" width="600" height="412" >
   </p>
 </h2>
 
@@ -15,7 +15,7 @@
   O desafio foi a adição de novas funcionalidades.
 </h3>
 
-  Funcionalidades adicionadas
+  Funcionalidades adicionadas:
 
   - Loading indicando o carregamento dos repositórios favoritos do usuário selecionado;
   - Scroll infinito na lista de repositórios favoritos em que quando chega-se em 20% do final da listagem os itens da próxima página são buscados e adicionados à lista;
