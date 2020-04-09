@@ -26,7 +26,10 @@ export default function Routes() {
         component={User}
         options={({ route }) => ({ title: route.params.user.name })}
       />
-      <Stack.Screen name="Repository" component={Repository} options={{ title: 'Repositório' }} />
+      <Stack.Screen name="Repository"
+      component={Repository}
+      options={({ route }) => ({ title: route.params.name })}
+      />
     </Stack.Navigator>
   );
 }
