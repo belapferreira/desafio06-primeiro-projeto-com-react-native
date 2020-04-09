@@ -4,8 +4,8 @@
 
 <h2 align="center">
   Desafio 6: Primeiro projeto com React Native
-
-  <img src="/images/desafio06.PNG">
+  <br/>
+  <img src="/images/screenshot.png" >
 </h2>
 
 <h3 align="center">
