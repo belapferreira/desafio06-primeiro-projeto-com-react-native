@@ -5,7 +5,7 @@
 <h2 align="center">
   <p>Desafio 6: Primeiro projeto com React Native</p>
   <p>
-  <img src="/images/desafio06.PNG" width="600" height="412" >
+  <img src="/images/desafio06.PNG" width="70%" height="70%" max-width:100% >
   </p>
 </h2>
 
